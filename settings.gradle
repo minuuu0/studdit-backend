@@ -1,1 +1,2 @@
 rootProject.name = 'studdit'
+include('module-application', 'module-common', 'module-domain', 'module-independant', 'module-internal')

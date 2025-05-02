@@ -1,0 +1,16 @@
+apply plugin: 'org.springframework.boot'
+
+// Spring Boot 애플리케이션은 bootJar 활성화, 일반 jar 비활성화
+tasks.withType(Jar) {
+    enabled = name == "bootJar"
+}
+
+dependencies {
+    implementation project(':module-common')
+    implementation project(':module-domain')
+    implementation project(':module-independant')
+    implementation project(':module-internal')
+
+    // Web 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}
