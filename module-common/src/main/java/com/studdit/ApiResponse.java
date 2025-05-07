@@ -9,6 +9,7 @@ public class ApiResponse<T> {
 
     public ApiResponse(HttpStatus status, String message, T data) {
         this.code = status.getValue();
+        this.httpStatus = status;
         this.message = message;
         this.data = data;
     }

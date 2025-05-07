@@ -8,6 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -22,9 +26,31 @@ public class ScheduleService {
         return ScheduleResponse.of(serviceRequest);
     }
 
+
     @Transactional
     public ScheduleResponse modifySchedule(ScheduleModifyServiceRequest serviceRequest) {
-        System.out.println(serviceRequest.getId());
+        // 수정 구현
         return ScheduleResponse.of(serviceRequest);
+    }
+
+    public List<ScheduleResponse> findSchedules(String username, String view, LocalDate date) {
+        List<ScheduleResponse> list = Arrays.asList(
+                ScheduleResponse.builder()
+                        .id(1L)
+                        .title("1번")
+                        .description("1번 설명입니다.")
+                        .build(),
+                ScheduleResponse.builder()
+                        .id(2L)
+                        .title("2번")
+                        .description("2번 설명입니다.")
+                        .build(),
+                ScheduleResponse.builder()
+                        .id(1L)
+                        .title("3번")
+                        .description("3번 설명입니다.")
+                        .build()
+        );
+        return list;
     }
 }

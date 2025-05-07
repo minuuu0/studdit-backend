@@ -22,15 +22,16 @@ public class ScheduleResponse {
     private boolean verification;
 
     @Builder
-    private ScheduleResponse(Long id,
-                            String title,
-                            String description,
-                            String category,
-                            LocalDateTime startTime,
-                            LocalDateTime endTime,
-                            Visibility visibility,
-                            boolean reviewWritten,
-                            boolean verification
+    private ScheduleResponse(
+            Long id,
+            String title,
+            String description,
+            String category,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            Visibility visibility,
+            boolean reviewWritten,
+            boolean verification
     ) {
         this.id = id;
         this.title = title;
