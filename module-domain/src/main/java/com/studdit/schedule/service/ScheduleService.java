@@ -53,4 +53,9 @@ public class ScheduleService {
         );
         return list;
     }
+
+    public ScheduleResponse deleteSchedule(Long id) {
+        // delete
+        return null;
+    }
 }
