@@ -30,11 +30,16 @@ public class ScheduleController {
             @RequestParam(required = false, defaultValue = "month") String view,
             @RequestParam(required = false) LocalDate date
     ) {
-        return ApiResponse.ok(scheduleService.findSchedules(username, view, date));
+        return ApiResponse.ok(scheduleService.findSchedules(username, view, date)); // to-do
     }
 
     @PutMapping("/schedules/{id}")
     private ApiResponse<ScheduleResponse> modifySchedule(@Valid @PathVariable Long id, @RequestBody ScheduleModifyRequest request) {
         return ApiResponse.ok(scheduleService.modifySchedule(request.toServiceRequest(id)));
+    }
+
+    @DeleteMapping("/schedules/{id}")
+    private ApiResponse<ScheduleResponse> deleteSchedule(@Valid @PathVariable Long id) {
+        return ApiResponse.ok(scheduleService.deleteSchedule(id));
     }
 }
