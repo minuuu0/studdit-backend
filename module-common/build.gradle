@@ -1,3 +1,14 @@
-dependencies {
+apply plugin: 'io.spring.dependency-management'
 
+// "런타임" 조작의 의존성은 공통모듈에 추가하지 않는다.
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+// springboot 플러그인을 주입하지 않았기 때문에 BOM을 수동으로 import
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:3.4.4"
+    }
 }
