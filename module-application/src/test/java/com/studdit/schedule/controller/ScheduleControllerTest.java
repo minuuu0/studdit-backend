@@ -90,12 +90,12 @@ class ScheduleControllerTest {
     void findSchedules() throws Exception{
         // given
         List<ScheduleResponse> result = List.of();
-        when(scheduleService.findSchedules("test1234", "weeks", LocalDate.now()))
+        when(scheduleService.findSchedules("test1234", "weeks", LocalDateTime.now()))
                 .thenReturn(result);
 
         // when & then
         mockMvc.perform(
-                        get("/schedules?username=test1234&view=weeks&date=2025-05-07")
+                        get("/schedules?username=test1234&view=week&date=2025-05-07T00:00:00")
                 )
                 .andDo(print())
                 .andExpect(status().isOk())

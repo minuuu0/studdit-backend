@@ -50,7 +50,7 @@ public class ScheduleModifyRequest {
 
     public ScheduleModifyServiceRequest toServiceRequest(Long id) {
         return ScheduleModifyServiceRequest.builder()
-                .id(this.id)
+                .id(id)
                 .title(title)
                 .description(description)
                 .category(category)
