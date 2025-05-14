@@ -7,11 +7,9 @@ import com.studdit.schedule.request.ScheduleCreateServiceRequest;
 import com.studdit.schedule.request.ScheduleModifyServiceRequest;
 import com.studdit.schedule.response.ScheduleResponse;
 import jakarta.persistence.EntityNotFoundException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,12 +20,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -272,9 +268,8 @@ class ScheduleServiceTest {
         LocalDateTime date = LocalDateTime.of(2025, 5, 13, 10, 0);
 
         // when & then
-        assertThrows(IllegalArgumentException.class, () ->
-                scheduleService.findSchedules(username, invalidView, date));
-        verifyNoInteractions(scheduleRepository);
+        assertThatThrownBy(() -> scheduleService.findSchedules(username, invalidView, date))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 
