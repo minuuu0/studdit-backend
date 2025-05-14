@@ -1,6 +1,6 @@
 package com.studdit.review.response;
 
-import com.studdit.review.request.ReviewCreateServiceRequest;
+import com.studdit.review.Repository.Review;
 import com.studdit.review.request.ReviewModifyServiceRequest;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,24 +26,13 @@ public class ReviewResponse {
         this.tags = tags;
     }
 
-    public static ReviewResponse of(ReviewCreateServiceRequest serviceRequest) {
+    public static ReviewResponse of(Review review) {
         return ReviewResponse.builder()
-                .scheduleId(serviceRequest.getScheduleId())
+                .scheduleId(review.getScheduleId())
                 .reviewId(1L)
-                .content(serviceRequest.getContent())
-                .difficulty(serviceRequest.getDifficulty())
-                .tags(serviceRequest.getTags())
+                .content(review.getContent())
+                .difficulty(review.getDifficulty())
+                .tags(review.getTags())
                 .build();
-    }
-
-    public static ReviewResponse of(ReviewModifyServiceRequest serviceRequest) {
-        return ReviewResponse.builder()
-                .scheduleId(serviceRequest.getScheduleId())
-                .reviewId(serviceRequest.getReviewId())
-                .content(serviceRequest.getContent())
-                .difficulty(serviceRequest.getDifficulty())
-                .tags(serviceRequest.getTags())
-                .build();
-
     }
 }

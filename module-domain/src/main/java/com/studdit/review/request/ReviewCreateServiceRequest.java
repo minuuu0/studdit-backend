@@ -1,5 +1,6 @@
 package com.studdit.review.request;
 
+import com.studdit.review.Repository.Review;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,5 +19,14 @@ public class ReviewCreateServiceRequest {
         this.content = content;
         this.difficulty = difficulty;
         this.tags = tags;
+    }
+
+    public Review toEntity() {
+        return Review.builder()
+                .scheduleId(scheduleId)
+                .content(content)
+                .difficulty(difficulty)
+                .tags(tags)
+                .build();
     }
 }

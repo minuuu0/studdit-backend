@@ -45,17 +45,17 @@ public class ScheduleResponse {
         this.verification = verification;
     }
 
-    public static ScheduleResponse of(Schedule savedSchedule) {
+    public static ScheduleResponse of(Schedule schedule) {
         return ScheduleResponse.builder()
-                .id(savedSchedule.getId())
-                .title(savedSchedule.getTitle())
-                .description(savedSchedule.getDescription())
-                .category(savedSchedule.getCategory())
-                .startDateTime(savedSchedule.getStartDateTime())
-                .endDateTime(savedSchedule.getEndDateTime())
+                .id(schedule.getId())
+                .title(schedule.getTitle())
+                .description(schedule.getDescription())
+                .category(schedule.getCategory())
+                .startDateTime(schedule.getStartDateTime())
+                .endDateTime(schedule.getEndDateTime())
                 .reviewWritten(false)
                 .verification(false)
-                .visibility(savedSchedule.getVisibility())
+                .visibility(schedule.getVisibility())
                 .build();
     }
 }

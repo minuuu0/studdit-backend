@@ -1,33 +1,61 @@
 package com.studdit.review.service;
 
+import com.studdit.review.Repository.Review;
+import com.studdit.review.Repository.ReviewRepository;
 import com.studdit.review.request.ReviewCreateServiceRequest;
 import com.studdit.review.request.ReviewModifyServiceRequest;
 import com.studdit.review.response.ReviewResponse;
+import com.studdit.schedule.repository.Schedule;
+import com.studdit.schedule.repository.ScheduleRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReviewService {
-    // to-do 추후 수행
-    public ReviewResponse createReview(ReviewCreateServiceRequest serviceRequest) {
 
-        // entity 반환
-        return ReviewResponse.of(serviceRequest);
+    private final ReviewRepository reviewRepository;
+    private final ScheduleRepository scheduleRepository;
+
+    @Transactional
+    public ReviewResponse createReview(ReviewCreateServiceRequest request) {
+
+        Review review = request.toEntity();
+        Review savedReview = reviewRepository.save(review);
+        return ReviewResponse.of(savedReview);
     }
 
     public ReviewResponse findReview(Long scheduleId, Long reviewId) {
 
-        return ReviewResponse.builder()
-                .scheduleId(scheduleId)
-                .reviewId(reviewId)
-                .build();
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 일정을 찾을 수 없습니다."));
+
+        Review review = reviewRepository.findByIdAndScheduleId(reviewId, scheduleId)
+                .orElseThrow(() -> new EntityNotFoundException("회고를 찾을 수 없습니다"));
+
+        return ReviewResponse.of(review);
     }
 
-    public ReviewResponse modifyReview(ReviewModifyServiceRequest serviceRequest) {
-        return ReviewResponse.of(serviceRequest);
+    @Transactional
+    public ReviewResponse modifyReview(ReviewModifyServiceRequest request) {
+        Review review = reviewRepository.findById(request.getReviewId())
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 회고를 찾을 수 없습니다."));
+        review.update(request);
+        return ReviewResponse.of(review);
     }
 
+    @Transactional
     public ReviewResponse deleteReview(Long scheduleId, Long reviewId) {
-        // delete
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 일정을 찾을 수 없습니다."));
+
+        Review review = reviewRepository.findByIdAndScheduleId(reviewId, scheduleId)
+                .orElseThrow(() -> new EntityNotFoundException("회고를 찾을 수 없습니다"));
+
+        reviewRepository.delete(review);
         return null;
     }
 }

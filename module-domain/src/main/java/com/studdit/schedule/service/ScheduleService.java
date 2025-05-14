@@ -26,7 +26,6 @@ public class ScheduleService {
     public ScheduleResponse createSchedule(ScheduleCreateServiceRequest request) {
 
         Schedule schedule = request.toEntity();
-        // 현재는 request를 반환하지만 추후엔 저장한 엔티티를 반환한다.
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return ScheduleResponse.of(savedSchedule);
     }
