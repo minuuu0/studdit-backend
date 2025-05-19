@@ -1,6 +1,7 @@
 package com.studdit.schedule.request;
 
 import com.studdit.schedule.enums.Visibility;
+import com.studdit.schedule.repository.Schedule;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,5 +32,16 @@ public class ScheduleCreateServiceRequest {
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.visibility = visibility;
+    }
+
+    public Schedule toEntity() {
+        return Schedule.builder()
+                .title(title)
+                .description(description)
+                .category(category)
+                .startDateTime(startDateTime)
+                .endDateTime(endDateTime)
+                .visibility(visibility)
+                .build();
     }
 }

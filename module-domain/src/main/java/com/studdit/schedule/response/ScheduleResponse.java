@@ -1,5 +1,6 @@
 package com.studdit.schedule.response;
 
+import com.studdit.schedule.repository.Schedule;
 import com.studdit.schedule.request.ScheduleCreateServiceRequest;
 import com.studdit.schedule.enums.Visibility;
 import com.studdit.schedule.request.ScheduleModifyServiceRequest;
@@ -15,8 +16,8 @@ public class ScheduleResponse {
     private String title;
     private String description;
     private String category;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
     private Visibility visibility;
     private boolean reviewWritten;
     private boolean verification;
@@ -27,8 +28,8 @@ public class ScheduleResponse {
             String title,
             String description,
             String category,
-            LocalDateTime startTime,
-            LocalDateTime endTime,
+            LocalDateTime startDateTime,
+            LocalDateTime endDateTime,
             Visibility visibility,
             boolean reviewWritten,
             boolean verification
@@ -37,36 +38,24 @@ public class ScheduleResponse {
         this.title = title;
         this.description = description;
         this.category = category;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
         this.visibility = visibility;
         this.reviewWritten = reviewWritten;
         this.verification = verification;
     }
 
-    public static ScheduleResponse of(ScheduleCreateServiceRequest serviceRequest) {
+    public static ScheduleResponse of(Schedule schedule) {
         return ScheduleResponse.builder()
-                .id(1L)
-                .title(serviceRequest.getTitle())
-                .description(serviceRequest.getDescription())
-                .category(serviceRequest.getCategory())
-                .startTime(serviceRequest.getStartDateTime())
-                .endTime(serviceRequest.getEndDateTime())
+                .id(schedule.getId())
+                .title(schedule.getTitle())
+                .description(schedule.getDescription())
+                .category(schedule.getCategory())
+                .startDateTime(schedule.getStartDateTime())
+                .endDateTime(schedule.getEndDateTime())
                 .reviewWritten(false)
                 .verification(false)
-                .build();
-    }
-
-    public static ScheduleResponse of(ScheduleModifyServiceRequest serviceRequest) {
-        return ScheduleResponse.builder()
-                .id(serviceRequest.getId())
-                .title(serviceRequest.getTitle())
-                .description(serviceRequest.getDescription())
-                .category(serviceRequest.getCategory())
-                .startTime(serviceRequest.getStartDateTime())
-                .endTime(serviceRequest.getEndDateTime())
-                .reviewWritten(false)
-                .verification(false)
+                .visibility(schedule.getVisibility())
                 .build();
     }
 }

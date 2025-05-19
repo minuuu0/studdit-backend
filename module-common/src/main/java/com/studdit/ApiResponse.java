@@ -1,5 +1,8 @@
 package com.studdit;
 
+import lombok.Getter;
+
+@Getter
 public class ApiResponse<T> {
 
     private int code;
@@ -24,21 +27,5 @@ public class ApiResponse<T> {
 
     private static <T> ApiResponse<T> of(HttpStatus httpStatus, String message, T data) {
         return new ApiResponse<>(httpStatus, message, data);
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public HttpStatus getHttpStatus() {
-        return httpStatus;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public T getData() {
-        return data;
     }
 }

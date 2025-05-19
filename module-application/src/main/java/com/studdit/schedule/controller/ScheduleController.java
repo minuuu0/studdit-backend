@@ -7,9 +7,11 @@ import com.studdit.schedule.request.ScheduleModifyRequest;
 import com.studdit.schedule.service.ScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -28,13 +30,18 @@ public class ScheduleController {
     private ApiResponse<List<ScheduleResponse>> findSchedules(
             @RequestParam String username,
             @RequestParam(required = false, defaultValue = "month") String view,
-            @RequestParam(required = false) LocalDate date
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date
     ) {
-        return ApiResponse.ok(scheduleService.findSchedules(username, view, date));
+        return ApiResponse.ok(scheduleService.findSchedules(username, view, date)); // to-do
     }
 
     @PutMapping("/schedules/{id}")
     private ApiResponse<ScheduleResponse> modifySchedule(@Valid @PathVariable Long id, @RequestBody ScheduleModifyRequest request) {
         return ApiResponse.ok(scheduleService.modifySchedule(request.toServiceRequest(id)));
+    }
+
+    @DeleteMapping("/schedules/{id}")
+    private ApiResponse<ScheduleResponse> deleteSchedule(@Valid @PathVariable Long id) {
+        return ApiResponse.ok(scheduleService.deleteSchedule(id));
     }
 }
