@@ -1,0 +1,32 @@
+services:
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - datasource.env # to-do secrets관련 사용 고려
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/studdit?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: 1234
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: studdit
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 1234 # 기존의 env 파일을 정의했지만 도커 내부에서 env_file을 찾지 못했다.. 보안적으로 드러내지 않을 필요성이 있다.
+
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u${MYSQL_USER} -p${MYSQL_PASSWORD}" ] # 환경변수 사용
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+

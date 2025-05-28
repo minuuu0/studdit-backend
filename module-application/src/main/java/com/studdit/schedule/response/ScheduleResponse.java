@@ -1,45 +1,36 @@
-package com.studdit.schedule.request;
+package com.studdit.schedule.response;
 
+import com.studdit.schedule.domain.Schedule;
 import com.studdit.schedule.enums.Visibility;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
-public class ScheduleModifyRequest {
+public class ScheduleResponse {
 
     private Long id;
-
     private String title;
-
     private String description;
-
     private String category;
-
-    @NotNull(message = "시작 일시는 필수입니다.")
     private LocalDateTime startDateTime;
-
-    @NotNull(message = "종료 일시는 필수입니다.")
     private LocalDateTime endDateTime;
-
-    @NotNull(message = "공유여부는 필수입니다.")
     private Visibility visibility;
-
-    private RecurrenceRuleCreateRequest recurrenceRule;
+    private boolean reviewWritten;
+    private boolean verification;
 
     @Builder
-    private ScheduleModifyRequest(
+    private ScheduleResponse(
             Long id,
             String title,
             String description,
             String category,
             LocalDateTime startDateTime,
             LocalDateTime endDateTime,
-            Visibility visibility
+            Visibility visibility,
+            boolean reviewWritten,
+            boolean verification
     ) {
         this.id = id;
         this.title = title;
@@ -48,15 +39,19 @@ public class ScheduleModifyRequest {
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.visibility = visibility;
+        this.reviewWritten = reviewWritten;
+        this.verification = verification;
     }
 
-    public ScheduleModifyServiceRequest toServiceRequest(Long id) {
-        return ScheduleModifyServiceRequest.builder()
-                .id(id)
-                .title(title)
-                .description(description)
-                .category(category)
-                .visibility(visibility)
+    public static ScheduleResponse of(Schedule schedule) {
+        return ScheduleResponse.builder()
+                .id(schedule.getId())
+                .title(schedule.getTitle())
+                .description(schedule.getDescription())
+                .category(schedule.getCategory())
+                .reviewWritten(false)
+                .verification(false)
+                .visibility(schedule.getVisibility())
                 .build();
     }
 }

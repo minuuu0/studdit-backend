@@ -2,8 +2,7 @@ package com.studdit.tracking.controller;
 
 import com.studdit.ApiResponse;
 import com.studdit.tracking.enums.TrackingStatus;
-import com.studdit.tracking.request.TrackingCreateRequest;
-import com.studdit.tracking.response.TrackingResponse;
+import com.studdit.tracking.service.TrackingResponse;
 import com.studdit.tracking.service.TrackingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
