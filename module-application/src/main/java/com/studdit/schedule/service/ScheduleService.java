@@ -9,7 +9,7 @@ import com.studdit.schedule.repository.*;
 import com.studdit.schedule.request.RecurrenceRuleCreateServiceRequest;
 import com.studdit.schedule.request.ScheduleCreateServiceRequest;
 import com.studdit.schedule.request.ScheduleModifyServiceRequest;
-import com.studdit.schedule.response.ScheduleResponse;
+import com.studdit.schedule.response.ScheduleCreateResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,20 +31,21 @@ public class ScheduleService {
 
     // Business
     @Transactional
-    public ScheduleResponse createSchedule(ScheduleCreateServiceRequest request) {
-
+    public ScheduleCreateResponse createSchedule(ScheduleCreateServiceRequest request) {
         // 1. 마스터 일정 생성
         Schedule schedule = request.toEntity();
         Schedule savedSchedule = scheduleRepository.save(schedule);
 
         // 2. 일정 인스턴스 생성
-        createScheduleInstances(savedSchedule.getId(), request);
-        return ScheduleResponse.of(savedSchedule);
+        List<ScheduleInstance> instances = createScheduleInstances(savedSchedule.getId(), request);
+        scheduleInstanceRepsitory.saveAll(instances);
+
+        return ScheduleCreateResponse.of(savedSchedule, instances);
     }
 
 
     @Transactional
-    public ScheduleResponse modifySchedule(ScheduleModifyServiceRequest request) {
+    public ScheduleCreateResponse modifySchedule(ScheduleModifyServiceRequest request) {
 
         Schedule requestSchedule = request.toEntity();
         Schedule schedule = scheduleRepository.findById(request.getId())
@@ -52,7 +53,7 @@ public class ScheduleService {
 
         schedule.update(requestSchedule);
 
-        return ScheduleResponse.of(schedule);
+        return ScheduleCreateResponse.builder().build();
     }
 /*
     public List<ScheduleResponse> findSchedules(String username, String view, LocalDateTime date) {
@@ -69,7 +70,7 @@ public class ScheduleService {
  */
 
     @Transactional
-    public ScheduleResponse deleteSchedule(Long id) {
+    public ScheduleCreateResponse deleteSchedule(Long id) {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 일정을 찾을 수 없습니다."));
 
@@ -80,27 +81,21 @@ public class ScheduleService {
 
     // implementation
 
-    private void createScheduleInstances(Long scheduleId, ScheduleCreateServiceRequest request) {
+    private List<ScheduleInstance> createScheduleInstances(Long scheduleId, ScheduleCreateServiceRequest request) {
         if (request.getRecurrenceRuleCreateServiceRequest() == null) {
-            createSingleSchedule(scheduleId, request);
+            // 단일 일정인 경우
+            ScheduleInstance singleInstance = instanceGenerator.createSingleInstance(scheduleId, request);
+            return List.of(singleInstance);
         } else {
-            createRecurringSchedule(scheduleId, request);
+            // 반복 일정인 경우
+            RecurrenceRule recurrenceRule = createRecurrenceRule(scheduleId, request.getRecurrenceRuleCreateServiceRequest());
+            recurrenceRuleRepository.save(recurrenceRule);
+            List<ScheduleInstance> instances = instanceGenerator.createRecurrenceInstances(scheduleId, recurrenceRule, request);
+            return instances;
         }
     }
 
-    private void createSingleSchedule(Long scheduleId, ScheduleCreateServiceRequest request) {
-
-    }
-
-    private void createRecurringSchedule(Long scheduleId, ScheduleCreateServiceRequest request) {
-        RecurrenceRule recurrenceRule = createRecurrenceRule(scheduleId, request.getRecurrenceRuleCreateServiceRequest());
-        recurrenceRuleRepository.save(recurrenceRule);
-        Duration duration = Duration.between(request.getStartDateTime(), request.getEndDateTime());
-        List<ScheduleInstance> instances = instanceGenerator.generateInstances(recurrenceRule, request.getStartDateTime(), duration);
-        scheduleInstanceRepsitory.saveAll(instances);
-    }
-
-    // to-do RecurrenceRule의 객체를 만드는 책임
+    // to-do RecurrenceRule의 객체를 만드는 책임을 분리해야하지 않을까
     private RecurrenceRule createRecurrenceRule(Long scheduleId, RecurrenceRuleCreateServiceRequest recurrenceRule) {
         return RecurrenceRule.builder()
                 .scheduleId(scheduleId)

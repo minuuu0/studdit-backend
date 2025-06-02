@@ -38,7 +38,6 @@ public class ScheduleModifyServiceRequest {
                 .title(title)
                 .description(description)
                 .category(category)
-                .visibility(visibility)
                 .isRecurring(isRecurring)
                 .build();
 

@@ -1,7 +1,6 @@
 package com.studdit.schedule.request;
 
 import com.studdit.schedule.enums.Visibility;
-import com.studdit.schedule.domain.RecurrenceRule;
 import com.studdit.schedule.domain.Schedule;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,7 +45,6 @@ public class ScheduleCreateServiceRequest {
                 .title(title)
                 .description(description)
                 .category(category)
-                .visibility(visibility)
                 .isRecurring(isRecurring)
                 .build();
     }

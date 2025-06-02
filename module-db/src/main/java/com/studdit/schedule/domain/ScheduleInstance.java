@@ -1,10 +1,8 @@
 package com.studdit.schedule.domain;
 
 import com.studdit.BaseEntity;
-import com.studdit.schedule.enums.VariantType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.studdit.schedule.enums.Visibility;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,17 +27,18 @@ public class ScheduleInstance extends BaseEntity {
 
     private LocalDateTime endDateTime;
 
-    private Boolean isVariant = false;
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility;
 
-    private VariantType variantType;
+    private Boolean isVariant;
 
     @Builder
-    private ScheduleInstance(Long id, Long scheduleId, LocalDateTime startDateTime, LocalDateTime endDateTime, Boolean isVariant, VariantType variantType) {
+    private ScheduleInstance(Long id, Long scheduleId, LocalDateTime startDateTime, LocalDateTime endDateTime, Visibility visibility, Boolean isVariant) {
         this.id = id;
         this.scheduleId = scheduleId;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
+        this.visibility = visibility;
         this.isVariant = isVariant;
-        this.variantType = variantType;
     }
 }

@@ -5,7 +5,7 @@ import com.studdit.schedule.domain.Schedule;
 import com.studdit.schedule.repository.ScheduleRepository;
 import com.studdit.schedule.request.ScheduleCreateServiceRequest;
 import com.studdit.schedule.request.ScheduleModifyServiceRequest;
-import com.studdit.schedule.response.ScheduleResponse;
+import com.studdit.schedule.response.ScheduleCreateResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -62,7 +62,7 @@ class ScheduleServiceTest {
         when(scheduleRepository.save(any(Schedule.class))).thenReturn(savedSchedule);
 
         //when
-        ScheduleResponse response = scheduleService.createSchedule(request);
+        ScheduleCreateResponse response = scheduleService.createSchedule(request);
 
         //then
         assertThat(response).isNotNull();
@@ -100,7 +100,7 @@ class ScheduleServiceTest {
         when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(originalSchedule));
 
         //when
-        ScheduleResponse response = scheduleService.modifySchedule(request);
+        ScheduleCreateResponse response = scheduleService.modifySchedule(request);
 
         //then
         assertThat(response).isNotNull();
@@ -168,7 +168,7 @@ class ScheduleServiceTest {
                 .thenReturn(schedules);
 
         //when
-        List<ScheduleResponse> responses = scheduleService.findSchedules(username, view, date);
+        List<ScheduleCreateResponse> responses = scheduleService.findSchedules(username, view, date);
         //then
         Assertions.assertThat(responses).hasSize(2);
         assertThat(responses.get(0).getId()).isEqualTo(1L);
@@ -192,7 +192,7 @@ class ScheduleServiceTest {
         List<Schedule> schedules = List.of();
 
         // when
-        List<ScheduleResponse> result = scheduleService.findSchedules(username, view, date);
+        List<ScheduleCreateResponse> result = scheduleService.findSchedules(username, view, date);
 
         // then
         // 1. 리포지토리 메소드가 정확한 날짜 범위로 호출되었는지 검증
@@ -218,7 +218,7 @@ class ScheduleServiceTest {
         List<Schedule> schedules = List.of();
 
         // when
-        List<ScheduleResponse> result = scheduleService.findSchedules(username, view, date);
+        List<ScheduleCreateResponse> result = scheduleService.findSchedules(username, view, date);
 
         // then
         // 리포지토리 메소드가 정확한 날짜 범위로 호출되었는지 검증
@@ -246,7 +246,7 @@ class ScheduleServiceTest {
         LocalDateTime expectedEndDate = endDate.atTime(LocalTime.MAX);
 
         // when
-        List<ScheduleResponse> result = scheduleService.findSchedules(username, view, date);
+        List<ScheduleCreateResponse> result = scheduleService.findSchedules(username, view, date);
 
         // then
         verify(scheduleRepository).findByDateRange(expectedStartDate, expectedEndDate);
@@ -282,7 +282,7 @@ class ScheduleServiceTest {
 
         when(scheduleRepository.findById(id)).thenReturn(Optional.of(schedule));
         //when
-        ScheduleResponse response = scheduleService.deleteSchedule(id);
+        ScheduleCreateResponse response = scheduleService.deleteSchedule(id);
 
         //then
         assertThat(response).isNull();

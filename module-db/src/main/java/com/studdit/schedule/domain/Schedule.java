@@ -30,17 +30,14 @@ public class Schedule extends BaseEntity {
 
     private Boolean isRecurring;
 
-    @Enumerated(EnumType.STRING)
-    private Visibility visibility;
 
     @Builder
-    private Schedule(Long id, String title, String description, String category, Boolean isRecurring,LocalDateTime startDateTime, LocalDateTime endDateTime, Visibility visibility) {
+    private Schedule(Long id, String title, String description, String category, Boolean isRecurring,LocalDateTime startDateTime, LocalDateTime endDateTime) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.category = category;
         this.isRecurring = isRecurring;
-        this.visibility = visibility;
     }
 
     public void update(Schedule schedule) {
@@ -48,6 +45,5 @@ public class Schedule extends BaseEntity {
         this.description = schedule.getDescription();
         this.category = schedule.getCategory();
         this.isRecurring = schedule.getIsRecurring();
-        this.visibility = schedule.getVisibility();
     }
 }

@@ -1,7 +1,5 @@
 package com.studdit.tracking.service;
 
-import com.studdit.schedule.request.ScheduleCreateServiceRequest;
-import com.studdit.schedule.response.ScheduleResponse;
 import com.studdit.tracking.enums.TrackingStatus;
 import lombok.Builder;
 import lombok.Getter;

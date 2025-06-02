@@ -1,9 +1,8 @@
 package com.studdit.schedule.service;
 
 import com.studdit.schedule.domain.RecurrenceRule;
-import com.studdit.schedule.domain.Schedule;
 import com.studdit.schedule.domain.ScheduleInstance;
-import com.studdit.schedule.enums.VariantType;
+import com.studdit.schedule.request.ScheduleCreateServiceRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -27,30 +26,41 @@ public class ScheduleInstanceGenerator {
     4. 다음 반복 시간 계산
     5. 생성 종료 조건 확인 후 생성된 인스턴스 반환
      */
-    public List<ScheduleInstance> generateInstances(
+
+    public ScheduleInstance createSingleInstance(
+            Long scheduleId,
+            ScheduleCreateServiceRequest request
+    ) {
+        return ScheduleInstance.builder()
+                .scheduleId(scheduleId)
+                .startDateTime(request.getStartDateTime())
+                .endDateTime(request.getEndDateTime())
+                .visibility(request.getVisibility())
+                .isVariant(false)
+                .build();
+    }
+
+    public List<ScheduleInstance> createRecurrenceInstances(
+            Long scheduleId,
             RecurrenceRule rule,
-            LocalDateTime startDateTime,
-            Duration duration
+            ScheduleCreateServiceRequest request
     ) {
         List<ScheduleInstance> instances = new ArrayList<>();
-        // 현재 처리중인 인스턴스의 시작 시간
-        LocalDateTime currentDateTime = startDateTime;
-        // 일정 인스턴스를 생성할 마지막 시점
-        LocalDateTime generationUntil = startDateTime.plusMonths(DEFAULT_SCHEDULE_GENERATION_MONTHS);
-
+        LocalDateTime currentDateTime = request.getStartDateTime();
+        LocalDateTime generationUntil = currentDateTime.plusMonths(DEFAULT_SCHEDULE_GENERATION_MONTHS);
+        Duration duration = Duration.between(request.getStartDateTime(), request.getEndDateTime());
 
         while (currentDateTime.isBefore(generationUntil) && shouldContinueGenerating(rule, instances.size(), currentDateTime)) {
             instances.add(ScheduleInstance.builder()
-                    .scheduleId(rule.getScheduleId())
+                    .scheduleId(scheduleId)
                     .startDateTime(currentDateTime)
                     .endDateTime(currentDateTime.plus(duration))
-                    .variantType(VariantType.ORIGINAL)
+                    .visibility(request.getVisibility())
+                    .isVariant(false)
                     .build());
 
-            // 이후 반복일정 계산
             currentDateTime = calculateNextOccurrence(currentDateTime, rule);
 
-            // 종료 조건 체크
             if (rule.getEndDate() != null && currentDateTime.isAfter(rule.getEndDate().atStartOfDay())) {
                 break;
             }
