@@ -1,7 +1,7 @@
 package com.studdit.schedule.request;
 
 import com.studdit.schedule.enums.Visibility;
-import jakarta.validation.constraints.NotNull;
+import com.studdit.schedule.domain.Schedule;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,53 +10,42 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class ScheduleModifyRequest {
-
-    private Long id;
+public class ScheduleCreateServiceRequest {
 
     private String title;
-
     private String description;
-
     private String category;
-
-    @NotNull(message = "시작 일시는 필수입니다.")
-    private LocalDateTime startDateTime;
-
-    @NotNull(message = "종료 일시는 필수입니다.")
-    private LocalDateTime endDateTime;
-
-    @NotNull(message = "공유여부는 필수입니다.")
     private Visibility visibility;
-
-    private RecurrenceRuleCreateRequest recurrenceRule;
+    private LocalDateTime startDateTime;     // 시작 일시
+    private LocalDateTime endDateTime;       // 종료 일시
+    private RecurrenceRuleCreateServiceRequest recurrenceRuleCreateServiceRequest;
 
     @Builder
-    private ScheduleModifyRequest(
-            Long id,
+    private ScheduleCreateServiceRequest(
             String title,
             String description,
             String category,
+            Visibility visibility,
             LocalDateTime startDateTime,
             LocalDateTime endDateTime,
-            Visibility visibility
+            RecurrenceRuleCreateServiceRequest recurrenceRuleCreateServiceRequest
     ) {
-        this.id = id;
         this.title = title;
         this.description = description;
         this.category = category;
+        this.visibility = visibility;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-        this.visibility = visibility;
+        this.recurrenceRuleCreateServiceRequest = recurrenceRuleCreateServiceRequest;
     }
 
-    public ScheduleModifyServiceRequest toServiceRequest(Long id) {
-        return ScheduleModifyServiceRequest.builder()
-                .id(id)
+    public Schedule toEntity() {
+        boolean isRecurring = this.recurrenceRuleCreateServiceRequest != null;
+        return Schedule.builder()
                 .title(title)
                 .description(description)
                 .category(category)
-                .visibility(visibility)
+                .isRecurring(isRecurring)
                 .build();
     }
 }

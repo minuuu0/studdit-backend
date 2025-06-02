@@ -2,10 +2,8 @@ package com.studdit.tracking.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.studdit.schedule.response.ScheduleResponse;
-import com.studdit.schedule.service.ScheduleService;
 import com.studdit.tracking.enums.TrackingStatus;
-import com.studdit.tracking.response.TrackingResponse;
+import com.studdit.tracking.service.TrackingResponse;
 import com.studdit.tracking.service.TrackingService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,11 +12,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

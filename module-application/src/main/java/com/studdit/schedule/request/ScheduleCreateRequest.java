@@ -19,30 +19,32 @@ public class ScheduleCreateRequest {
 
     private String category;
 
-    @NotNull(message = "시작 일시는 필수입니다.")
-    private LocalDateTime startDateTime;
-
-    @NotNull(message = "종료 일시는 필수입니다.")
-    private LocalDateTime endDateTime;
-
     @NotNull(message = "공유여부는 필수입니다.")
     private Visibility visibility;
+
+    private LocalDateTime startDateTime;     // 시작 일시
+
+    private LocalDateTime endDateTime;       // 종료 일시
+
+    private RecurrenceRuleCreateRequest recurrenceRuleCreateRequest;
 
     @Builder
     private ScheduleCreateRequest(
             String title,
             String description,
             String category,
+            Visibility visibility,
             LocalDateTime startDateTime,
             LocalDateTime endDateTime,
-            Visibility visibility
+            RecurrenceRuleCreateRequest recurrenceRuleCreateRequest
     ) {
         this.title = title;
         this.description = description;
         this.category = category;
+        this.visibility = visibility;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-        this.visibility = visibility;
+        this.recurrenceRuleCreateRequest = recurrenceRuleCreateRequest;
     }
 
     public ScheduleCreateServiceRequest toServiceRequest() {
@@ -50,9 +52,15 @@ public class ScheduleCreateRequest {
                 .title(title)
                 .description(description)
                 .category(category)
+                .visibility(visibility)
                 .startDateTime(startDateTime)
                 .endDateTime(endDateTime)
-                .visibility(visibility)
+                .recurrenceRuleCreateServiceRequest( // to-do 설계에 대한 고민... 현재 null을 확인하는데 이 객체가 단일 원칙을 지킬 수 있는가..? 단일일정과 반복일정에 대한 DTO를 분리해야하나?
+                        recurrenceRuleCreateRequest != null ?
+                                recurrenceRuleCreateRequest.toServiceRequest() : null
+
+                )
                 .build();
     }
+
 }
