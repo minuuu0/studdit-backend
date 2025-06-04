@@ -1,5 +1,6 @@
 package com.studdit.schedule.request;
 
+import com.studdit.schedule.enums.ScheduleModifyType;
 import com.studdit.schedule.enums.Visibility;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -20,16 +21,18 @@ public class ScheduleModifyRequest {
 
     private String category;
 
+    @NotNull(message = "공유여부는 필수입니다.")
+    private Visibility visibility;
+
     @NotNull(message = "시작 일시는 필수입니다.")
     private LocalDateTime startDateTime;
 
     @NotNull(message = "종료 일시는 필수입니다.")
     private LocalDateTime endDateTime;
 
-    @NotNull(message = "공유여부는 필수입니다.")
-    private Visibility visibility;
+    private RecurrenceRuleCreateRequest recurrenceRuleCreateRequest;
 
-    private RecurrenceRuleCreateRequest recurrenceRule;
+    private ScheduleModifyType modifyType;
 
     @Builder
     private ScheduleModifyRequest(
@@ -39,7 +42,9 @@ public class ScheduleModifyRequest {
             String category,
             LocalDateTime startDateTime,
             LocalDateTime endDateTime,
-            Visibility visibility
+            Visibility visibility,
+            RecurrenceRuleCreateRequest recurrenceRuleCreateRequest,
+            ScheduleModifyType modifyType
     ) {
         this.id = id;
         this.title = title;
@@ -48,15 +53,26 @@ public class ScheduleModifyRequest {
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.visibility = visibility;
+        this.recurrenceRuleCreateRequest = recurrenceRuleCreateRequest;
+        this.modifyType = modifyType;
     }
 
-    public ScheduleModifyServiceRequest toServiceRequest(Long id) {
+    public ScheduleModifyServiceRequest toServiceRequest(Long scheduleId, Long instanceId) {
         return ScheduleModifyServiceRequest.builder()
-                .id(id)
+                .scheduleId(scheduleId)
+                .instanceId(instanceId)
                 .title(title)
                 .description(description)
                 .category(category)
                 .visibility(visibility)
+                .startDateTime(startDateTime)
+                .endDateTime(endDateTime)
+                .recurrenceRuleCreateServiceRequest(
+                        recurrenceRuleCreateRequest != null ?
+                                recurrenceRuleCreateRequest.toServiceRequest() : null
+                )
+                .modifyType(modifyType)
                 .build();
     }
+
 }

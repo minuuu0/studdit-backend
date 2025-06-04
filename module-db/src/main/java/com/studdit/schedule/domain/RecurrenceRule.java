@@ -21,7 +21,7 @@ public class RecurrenceRule extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private Long ScheduleId;
+    private Long scheduleId;
 
     @Enumerated(EnumType.STRING)
     private RecurrenceType type;
@@ -51,7 +51,7 @@ public class RecurrenceRule extends BaseEntity {
             Integer maxOccurrences
     ) {
         this.id = id;
-        ScheduleId = scheduleId;
+        scheduleId = scheduleId;
         this.type = type;
         this.frequency = frequency;
         this.byWeekday = byWeekday;

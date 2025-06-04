@@ -4,20 +4,25 @@ package com.studdit.schedule.service;
 import com.studdit.schedule.domain.RecurrenceRule;
 import com.studdit.schedule.domain.Schedule;
 import com.studdit.schedule.domain.ScheduleInstance;
+import com.studdit.schedule.enums.ScheduleModifyType;
 import com.studdit.schedule.enums.ScheduleViewType;
 import com.studdit.schedule.repository.*;
 import com.studdit.schedule.request.RecurrenceRuleCreateServiceRequest;
 import com.studdit.schedule.request.ScheduleCreateServiceRequest;
 import com.studdit.schedule.request.ScheduleModifyServiceRequest;
 import com.studdit.schedule.response.ScheduleCreateResponse;
+import com.studdit.schedule.response.ScheduleDeleteResponse;
+import com.studdit.schedule.response.ScheduleResponse;
+import com.studdit.schedule.response.ScheduleModifyResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,55 +37,54 @@ public class ScheduleService {
     // Business
     @Transactional
     public ScheduleCreateResponse createSchedule(ScheduleCreateServiceRequest request) {
-        // 1. 마스터 일정 생성
-        Schedule schedule = request.toEntity();
+        Schedule schedule = request.toScheduleEntity();
         Schedule savedSchedule = scheduleRepository.save(schedule);
 
-        // 2. 일정 인스턴스 생성
         List<ScheduleInstance> instances = createScheduleInstances(savedSchedule.getId(), request);
-        scheduleInstanceRepsitory.saveAll(instances);
+        List<ScheduleInstance> savedInstances = scheduleInstanceRepsitory.saveAll(instances);
 
-        return ScheduleCreateResponse.of(savedSchedule, instances);
+        return ScheduleCreateResponse.of(savedSchedule, savedInstances);
     }
-
 
     @Transactional
-    public ScheduleCreateResponse modifySchedule(ScheduleModifyServiceRequest request) {
-
-        Schedule requestSchedule = request.toEntity();
-        Schedule schedule = scheduleRepository.findById(request.getId())
+    public ScheduleModifyResponse modifySchedule(ScheduleModifyServiceRequest request) {
+        Schedule schedule = scheduleRepository.findById(request.getScheduleId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 일정을 찾을 수 없습니다."));
+        schedule.update(request.toScheduleEntity());
 
-        schedule.update(requestSchedule);
-
-        return ScheduleCreateResponse.builder().build();
+        ScheduleModifyResponse response = modifyScheduleInstances(schedule, request);
+        return response;
     }
-/*
+
     public List<ScheduleResponse> findSchedules(String username, String view, LocalDateTime date) {
         ScheduleViewType viewType = validateAndParseViewType(view);
         DateRange dateRange = calculateDateRange(viewType, date);
 
-        List<Schedule> schedules = scheduleRepository.findByDateRange(dateRange.getStart(), dateRange.getEnd());
+        // 범위 조건에 맞는 여러 인스턴스 조회
+        List<ScheduleInstance> instances = scheduleInstanceRepsitory.findByDateRange(dateRange.getStart(), dateRange.getEnd());
 
-        return schedules.stream()
-                .map(ScheduleResponse::of)
+        List<Long> scheduleIdList = instances.stream()
+                .map(ScheduleInstance::getScheduleId)
+                .distinct()
                 .collect(Collectors.toList());
+
+        // 인스턴스에 해당하는 여러 마스터 일정 조회
+        // Map<ScheduleId, Schedule>
+        Map<Long, Schedule> scheduleMap = scheduleRepository.findAllById(scheduleIdList).stream()
+                .collect(Collectors.toMap(Schedule::getId, schedule -> schedule));
+
+
+        return ScheduleResponse.fromInstances(instances, scheduleMap);
     }
+
+    // to-do
     /*
- */
-
     @Transactional
-    public ScheduleCreateResponse deleteSchedule(Long id) {
-        Schedule schedule = scheduleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 일정을 찾을 수 없습니다."));
+    public ScheduleDeleteResponse deleteSchedule(Long id) {
+    }*/
 
-        scheduleRepository.delete(schedule);
-
-        return null;
-    }
 
     // implementation
-
     private List<ScheduleInstance> createScheduleInstances(Long scheduleId, ScheduleCreateServiceRequest request) {
         if (request.getRecurrenceRuleCreateServiceRequest() == null) {
             // 단일 일정인 경우
@@ -96,6 +100,7 @@ public class ScheduleService {
     }
 
     // to-do RecurrenceRule의 객체를 만드는 책임을 분리해야하지 않을까
+
     private RecurrenceRule createRecurrenceRule(Long scheduleId, RecurrenceRuleCreateServiceRequest recurrenceRule) {
         return RecurrenceRule.builder()
                 .scheduleId(scheduleId)
@@ -107,6 +112,49 @@ public class ScheduleService {
                 .byMonth(recurrenceRule.getByMonth())
                 .maxOccurrences(recurrenceRule.getMaxOccurrences())
                 .build();
+    }
+    private ScheduleModifyResponse modifyScheduleInstances(Schedule schedule, ScheduleModifyServiceRequest request) {
+
+        ScheduleInstance updatedInstance = null;
+
+        if (request.getRecurrenceRuleCreateServiceRequest() == null) {
+            List<ScheduleInstance> instances = scheduleInstanceRepsitory.findByScheduleId(schedule.getId());
+
+            if (instances.isEmpty()) {
+                throw new EntityNotFoundException("해당 일정의 인스턴스를 찾을 수 없습니다.");
+            }
+            ScheduleInstance originInstance = instances.get(0);
+            originInstance.update(request.toScheduleInstanceEntity());
+            updatedInstance = originInstance;
+
+        } else {
+            // 수정할 일정이 반복일정인 경우
+            ScheduleModifyType modifyType = request.getModifyType();
+
+
+            switch (modifyType) {
+                case THIS_ONLY:
+                    updatedInstance = modifyThisInstanceOnly(schedule, request);
+                // to-do
+                case THIS_AND_FUTURE:
+                case ALL_OCCURRENCES:
+                default:
+                    throw new IllegalArgumentException("지원하지 않는 수정 타입입니다: " + modifyType);
+            }
+        }
+
+        return ScheduleModifyResponse.of(updatedInstance, schedule);
+    }
+
+    private ScheduleInstance modifyThisInstanceOnly(Schedule schedule, ScheduleModifyServiceRequest request) {
+        List<ScheduleInstance> instances = scheduleInstanceRepsitory.findByScheduleId(schedule.getId());
+
+        if (instances.isEmpty()) {
+            throw new EntityNotFoundException("해당 일정의 인스턴스를 찾을 수 없습니다.");
+        }
+        ScheduleInstance originInstance = instances.get(0);
+        originInstance.update(request.toScheduleInstanceEntity());
+        return originInstance;
     }
 
     private ScheduleViewType validateAndParseViewType(String view) {
