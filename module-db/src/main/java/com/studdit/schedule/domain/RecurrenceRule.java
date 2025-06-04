@@ -51,7 +51,7 @@ public class RecurrenceRule extends BaseEntity {
             Integer maxOccurrences
     ) {
         this.id = id;
-        scheduleId = scheduleId;
+        this.scheduleId = scheduleId;
         this.type = type;
         this.frequency = frequency;
         this.byWeekday = byWeekday;

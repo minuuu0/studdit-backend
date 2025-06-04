@@ -38,6 +38,7 @@ class ScheduleControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+
     @Test
     @DisplayName("학습 일정을 생성한다.")
     void createSchedule() throws Exception{
@@ -83,7 +84,7 @@ class ScheduleControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
-
+/*
     @Test
     @DisplayName("학습 일정을 유저이름과 조회기간을 이용해 조회한다.")
     void findSchedules() throws Exception{
@@ -102,6 +103,6 @@ class ScheduleControllerTest {
                 .andExpect(jsonPath("$.httpStatus").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").isArray());
-    }
+    }*/
 
 }

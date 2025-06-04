@@ -68,8 +68,6 @@ public class ScheduleService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        // 인스턴스에 해당하는 여러 마스터 일정 조회
-        // Map<ScheduleId, Schedule>
         Map<Long, Schedule> scheduleMap = scheduleRepository.findAllById(scheduleIdList).stream()
                 .collect(Collectors.toMap(Schedule::getId, schedule -> schedule));
 
@@ -94,13 +92,13 @@ public class ScheduleService {
             // 반복 일정인 경우
             RecurrenceRule recurrenceRule = createRecurrenceRule(scheduleId, request.getRecurrenceRuleCreateServiceRequest());
             recurrenceRuleRepository.save(recurrenceRule);
+
             List<ScheduleInstance> instances = instanceGenerator.createRecurrenceInstances(scheduleId, recurrenceRule, request);
             return instances;
         }
     }
 
     // to-do RecurrenceRule의 객체를 만드는 책임을 분리해야하지 않을까
-
     private RecurrenceRule createRecurrenceRule(Long scheduleId, RecurrenceRuleCreateServiceRequest recurrenceRule) {
         return RecurrenceRule.builder()
                 .scheduleId(scheduleId)
