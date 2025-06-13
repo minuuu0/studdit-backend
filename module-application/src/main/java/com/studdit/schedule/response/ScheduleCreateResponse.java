@@ -1,21 +1,31 @@
 package com.studdit.schedule.response;
 
-import com.studdit.schedule.domain.Schedule;
-import com.studdit.schedule.domain.ScheduleInstance;
+import com.studdit.schedule.Schedule;
+import com.studdit.schedule.enums.Visibility;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 @Getter
 public class ScheduleCreateResponse {
 
     private Long id;
+
     private String title;
+
     private String description;
+
     private String category;
-    private List<ScheduleInstanceResponse> instances;
+
+    private LocalDateTime startDateTime;
+
+    private LocalDateTime endDateTime;
+
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility;
 
     @Builder
     private ScheduleCreateResponse(
@@ -23,24 +33,28 @@ public class ScheduleCreateResponse {
             String title,
             String description,
             String category,
-            List<ScheduleInstanceResponse> instances
+            LocalDateTime startDateTime,
+            LocalDateTime endDateTime,
+            Visibility visibility
     ) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.category = category;
-        this.instances = instances;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.visibility = visibility;
     }
 
-    public static ScheduleCreateResponse of(Schedule schedule, List<ScheduleInstance> instances) {
+    public static ScheduleCreateResponse of(Schedule schedule) {
         return ScheduleCreateResponse.builder()
                 .id(schedule.getId())
                 .title(schedule.getTitle())
                 .description(schedule.getDescription())
                 .category(schedule.getCategory())
-                .instances(instances.stream()
-                        .map(ScheduleInstanceResponse::of)
-                        .collect(Collectors.toList()))
+                .startDateTime(schedule.getStartDateTime())
+                .endDateTime(schedule.getEndDateTime())
+                .visibility(schedule.getVisibility())
                 .build();
     }
 }

@@ -1,6 +1,7 @@
-package com.studdit.schedule.domain;
+package com.studdit.recurringschedule;
 
 import com.studdit.BaseEntity;
+import com.studdit.schedule.enums.DayofWeek;
 import com.studdit.schedule.enums.RecurrenceType;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -21,18 +23,20 @@ public class RecurrenceRule extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private Long scheduleId;
+    private Long recurringScheduleId;
 
     @Enumerated(EnumType.STRING)
-    private RecurrenceType type;
+    private RecurrenceType recurrenceType;
 
-    private Integer frequency; // 반복주기 n일/주/월/년
+    private Integer frequency; // 반복주기
 
-    private String byWeekday;   // 어떤 요일에 반복되는지 지정
+    @Enumerated(EnumType.STRING)
+    @ElementCollection
+    private Set<DayofWeek> byday;   // 반복 요일
 
-    private Integer byMonthday; // 월의 몇 번째 날에 반복되는지 지정
+    private Integer byMonthday; // 반복 날짜
 
-    private Integer byMonth;    // 연도의 몇 번째 월에 반복되는지 지정
+    private Integer byMonth;    // 반복 월
 
     private LocalDate endDate;  // 반복 종료 날짜
 
@@ -41,20 +45,20 @@ public class RecurrenceRule extends BaseEntity {
     @Builder
     private RecurrenceRule(
             Long id,
-            Long scheduleId,
-            RecurrenceType type,
+            Long recurringScheduleId,
+            RecurrenceType recurrenceType,
             Integer frequency,
-            String byWeekday,
+            Set<DayofWeek> byday,
             Integer byMonthday,
             Integer byMonth,
             LocalDate endDate,
             Integer maxOccurrences
     ) {
         this.id = id;
-        this.scheduleId = scheduleId;
-        this.type = type;
+        this.recurringScheduleId = recurringScheduleId;
+        this.recurrenceType = recurrenceType;
         this.frequency = frequency;
-        this.byWeekday = byWeekday;
+        this.byday = byday;
         this.byMonthday = byMonthday;
         this.byMonth = byMonth;
         this.endDate = endDate;

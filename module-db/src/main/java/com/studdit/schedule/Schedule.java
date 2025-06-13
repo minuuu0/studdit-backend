@@ -1,4 +1,4 @@
-package com.studdit.schedule.domain;
+package com.studdit.schedule;
 
 import com.studdit.BaseEntity;
 import com.studdit.schedule.enums.Visibility;
@@ -28,22 +28,31 @@ public class Schedule extends BaseEntity {
 
     private String category;
 
-    private Boolean isRecurring;
+    private LocalDateTime startDateTime;
+
+    private LocalDateTime endDateTime;
+
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility;
 
 
     @Builder
-    private Schedule(Long id, String title, String description, String category, Boolean isRecurring) {
+    private Schedule(Long id, String title, String description, String category, LocalDateTime startDateTime, LocalDateTime endDateTime, Visibility visibility) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.category = category;
-        this.isRecurring = isRecurring;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.visibility = visibility;
     }
 
     public void update(Schedule schedule) {
         this.title = schedule.getTitle();
         this.description = schedule.getDescription();
         this.category = schedule.getCategory();
-        this.isRecurring = schedule.getIsRecurring();
+        this.startDateTime = schedule.getStartDateTime();
+        this.endDateTime = schedule.getEndDateTime();
+        this.visibility = schedule.getVisibility();
     }
 }
