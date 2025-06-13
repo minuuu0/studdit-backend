@@ -36,7 +36,6 @@ public class ScheduleInstanceGenerator {
                 .startDateTime(request.getStartDateTime())
                 .endDateTime(request.getEndDateTime())
                 .visibility(request.getVisibility())
-                .isVariant(false)
                 .build();
     }
 
@@ -56,7 +55,6 @@ public class ScheduleInstanceGenerator {
                     .startDateTime(currentDateTime)
                     .endDateTime(currentDateTime.plus(duration))
                     .visibility(request.getVisibility())
-                    .isVariant(false)
                     .build());
 
             currentDateTime = calculateNextOccurrence(currentDateTime, rule);

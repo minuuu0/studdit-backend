@@ -39,7 +39,7 @@ public class ScheduleCreateServiceRequest {
         this.recurrenceRuleCreateServiceRequest = recurrenceRuleCreateServiceRequest;
     }
 
-    public Schedule toEntity() {
+    public Schedule toScheduleEntity() {
         boolean isRecurring = this.recurrenceRuleCreateServiceRequest != null;
         return Schedule.builder()
                 .title(title)

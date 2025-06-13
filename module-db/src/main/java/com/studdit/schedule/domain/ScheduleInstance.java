@@ -30,15 +30,19 @@ public class ScheduleInstance extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Visibility visibility;
 
-    private Boolean isVariant;
-
     @Builder
-    private ScheduleInstance(Long id, Long scheduleId, LocalDateTime startDateTime, LocalDateTime endDateTime, Visibility visibility, Boolean isVariant) {
+    private ScheduleInstance(Long id, Long scheduleId, LocalDateTime startDateTime, LocalDateTime endDateTime, Visibility visibility) {
         this.id = id;
         this.scheduleId = scheduleId;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.visibility = visibility;
-        this.isVariant = isVariant;
     }
+
+    public void update(ScheduleInstance scheduleInstance) {
+        this.startDateTime = scheduleInstance.getStartDateTime();
+        this.endDateTime = scheduleInstance.getEndDateTime();
+        this.visibility = scheduleInstance.getVisibility();
+    }
+
 }

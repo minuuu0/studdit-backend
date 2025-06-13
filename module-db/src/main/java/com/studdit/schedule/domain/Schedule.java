@@ -32,7 +32,7 @@ public class Schedule extends BaseEntity {
 
 
     @Builder
-    private Schedule(Long id, String title, String description, String category, Boolean isRecurring,LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    private Schedule(Long id, String title, String description, String category, Boolean isRecurring) {
         this.id = id;
         this.title = title;
         this.description = description;
