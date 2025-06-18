@@ -20,16 +20,11 @@ public class RecurringScheduleGenerator {
             RecurringScheduleCreateRequest request, 
             RecurrenceRule rule) {
         
-        List<RecurringSchedule> schedules = new ArrayList<>();
-        
-        if (rule.getRecurrenceType() == RecurrenceType.DAILY) {
-            return createDailySchedules(request, rule);
-        }
-        
-        return schedules;
+        return createSchedules(request, rule);
     }
     
-    private List<RecurringSchedule> createDailySchedules(
+    
+    private List<RecurringSchedule> createSchedules(
             RecurringScheduleCreateRequest request,
             RecurrenceRule rule) {
         
@@ -44,6 +39,7 @@ public class RecurringScheduleGenerator {
         String description = request.getDescription();
         String category = request.getCategory();
         Visibility visibility = request.getVisibility();
+        RecurrenceType type = rule.getRecurrenceType();
 
         for (int i = 0; i < maxOccurrences; i++) {
             if (endDate != null && currentStart.toLocalDate().isAfter(endDate)) {
@@ -62,11 +58,26 @@ public class RecurringScheduleGenerator {
                     
             schedules.add(schedule);
             
-            // 다음 날로 이동
-            currentStart = currentStart.plusDays(1);
-            currentEnd = currentEnd.plusDays(1);
+            // 반복 타입에 따라 다음 날짜로 이동
+            currentStart = getNextDateTime(currentStart, type);
+            currentEnd = getNextDateTime(currentEnd, type);
         }
         
         return schedules;
+    }
+    
+    private LocalDateTime getNextDateTime(LocalDateTime dateTime, RecurrenceType type) {
+        switch (type) {
+            case DAILY:
+                return dateTime.plusDays(1);
+            case WEEKLY:
+                return dateTime.plusWeeks(1);
+            case MONTHLY:
+                return dateTime.plusMonths(1);
+            case YEARLY:
+                return dateTime.plusYears(1);
+            default:
+                throw new IllegalArgumentException("지원하지 않는 반복타입 : " + type);
+        }
     }
 }
