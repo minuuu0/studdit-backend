@@ -21,6 +21,7 @@ public class RecurringScheduleService {
     private final RecurrenceRuleRepository recurrenceRuleRepository;
     private final RecurringScheduleGenerator scheduleGenerator;
 
+
     @Transactional
     public RecurringScheduleCreateResponse createSchedule(RecurringScheduleCreateRequest request) {
         // 반복 규칙 생성 및 저장
@@ -34,24 +35,5 @@ public class RecurringScheduleService {
         List<RecurringSchedule> savedSchedules = recurringScheduleRepository.saveAll(schedules);
 
         return RecurringScheduleCreateResponse.of(savedSchedules, savedRule);
-    }
-    
-    // 반복 일정 조회 메서드
-    public List<RecurringSchedule> findRecurringSchedulesByRuleId(Long ruleId) {
-        return recurringScheduleRepository.findByRecurrenceRuleId(ruleId);
-    }
-    
-    // 반복 일정 수정 메서드 (향후 구현)
-    @Transactional
-    public void modifyRecurringSchedule(/* 필요한 파라미터 */) {
-    }
-    
-    // 반복 일정 삭제 메서드 (향후 구현)
-    @Transactional
-    public void deleteRecurringSchedule(Long ruleId) {
-        // 반복 규칙과 관련된 모든 일정 삭제
-        recurringScheduleRepository.deleteByRecurrenceRuleId(ruleId);
-        // 반복 규칙 삭제
-        recurrenceRuleRepository.deleteById(ruleId);
     }
 }

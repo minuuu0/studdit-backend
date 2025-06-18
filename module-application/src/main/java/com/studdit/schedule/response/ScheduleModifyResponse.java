@@ -1,6 +1,6 @@
 package com.studdit.schedule.response;
 
-import com.studdit.schedule.Schedule;
+import com.studdit.schedule.SingleSchedule;
 import com.studdit.schedule.enums.Visibility;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,15 +37,15 @@ public class ScheduleModifyResponse {
         this.endDateTime = endDateTime;
     }
 
-    public static ScheduleModifyResponse of(Schedule schedule) {
+    public static ScheduleModifyResponse of(SingleSchedule singleSchedule) {
         return ScheduleModifyResponse.builder()
-                .id(schedule.getId())
-                .title(schedule.getTitle())
-                .description(schedule.getDescription())
-                .category(schedule.getCategory())
-                .visibility(schedule.getVisibility())
-                .startDateTime(schedule.getStartDateTime())
-                .endDateTime(schedule.getEndDateTime())
+                .id(singleSchedule.getId())
+                .title(singleSchedule.getTitle())
+                .description(singleSchedule.getDescription())
+                .category(singleSchedule.getCategory())
+                .visibility(singleSchedule.getVisibility())
+                .startDateTime(singleSchedule.getStartDateTime())
+                .endDateTime(singleSchedule.getEndDateTime())
                 .build();
     }
 }

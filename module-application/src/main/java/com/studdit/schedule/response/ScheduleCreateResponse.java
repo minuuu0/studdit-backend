@@ -1,6 +1,6 @@
 package com.studdit.schedule.response;
 
-import com.studdit.schedule.Schedule;
+import com.studdit.schedule.SingleSchedule;
 import com.studdit.schedule.enums.Visibility;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -46,15 +46,15 @@ public class ScheduleCreateResponse {
         this.visibility = visibility;
     }
 
-    public static ScheduleCreateResponse of(Schedule schedule) {
+    public static ScheduleCreateResponse of(SingleSchedule singleSchedule) {
         return ScheduleCreateResponse.builder()
-                .id(schedule.getId())
-                .title(schedule.getTitle())
-                .description(schedule.getDescription())
-                .category(schedule.getCategory())
-                .startDateTime(schedule.getStartDateTime())
-                .endDateTime(schedule.getEndDateTime())
-                .visibility(schedule.getVisibility())
+                .id(singleSchedule.getId())
+                .title(singleSchedule.getTitle())
+                .description(singleSchedule.getDescription())
+                .category(singleSchedule.getCategory())
+                .startDateTime(singleSchedule.getStartDateTime())
+                .endDateTime(singleSchedule.getEndDateTime())
+                .visibility(singleSchedule.getVisibility())
                 .build();
     }
 }

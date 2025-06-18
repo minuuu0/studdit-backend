@@ -14,6 +14,7 @@ public class RecurringScheduleController {
 
     private final RecurringScheduleService recurringScheduleService;
 
+
     @PostMapping("/recurring")
     public ApiResponse<RecurringScheduleCreateResponse> createRecurringSchedule(
             @RequestBody RecurringScheduleCreateRequest request

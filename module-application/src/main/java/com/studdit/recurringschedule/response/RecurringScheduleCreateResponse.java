@@ -2,23 +2,24 @@ package com.studdit.recurringschedule.response;
 
 import com.studdit.recurringschedule.RecurrenceRule;
 import com.studdit.recurringschedule.RecurringSchedule;
-import com.studdit.schedule.response.ScheduleCreateResponse;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@NoArgsConstructor
 public class RecurringScheduleCreateResponse {
 
     private RecurrenceRuleCreateResponse recurrenceRule;
-    private List<RecurringSchedule> schedules;
+    private List<RecurringScheduleResponse> schedules;
 
     @Builder
     private RecurringScheduleCreateResponse(
             RecurrenceRuleCreateResponse recurrenceRule,
-            List<RecurringSchedule> schedules
+            List<RecurringScheduleResponse> schedules
     ) {
         this.recurrenceRule = recurrenceRule;
         this.schedules = schedules;
@@ -27,7 +28,9 @@ public class RecurringScheduleCreateResponse {
     public static RecurringScheduleCreateResponse of(List<RecurringSchedule> savedSchedules, RecurrenceRule savedRule) {
         return RecurringScheduleCreateResponse.builder()
                 .recurrenceRule(RecurrenceRuleCreateResponse.of(savedRule))
-                .schedules(savedSchedules)
+                .schedules(savedSchedules.stream()
+                        .map(RecurringScheduleResponse::of)
+                        .collect(Collectors.toList()))
                 .build();
     }
 }

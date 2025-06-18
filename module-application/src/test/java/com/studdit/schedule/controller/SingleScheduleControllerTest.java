@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = {
         ScheduleController.class
 })
-class ScheduleControllerTest {
+class SingleScheduleControllerTest {
 
     @Autowired
     MockMvc mockMvc;

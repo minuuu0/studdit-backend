@@ -15,7 +15,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Schedule extends BaseEntity {
+public class SingleSchedule extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -37,7 +37,7 @@ public class Schedule extends BaseEntity {
 
 
     @Builder
-    private Schedule(Long id, String title, String description, String category, LocalDateTime startDateTime, LocalDateTime endDateTime, Visibility visibility) {
+    private SingleSchedule(Long id, String title, String description, String category, LocalDateTime startDateTime, LocalDateTime endDateTime, Visibility visibility) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -47,12 +47,12 @@ public class Schedule extends BaseEntity {
         this.visibility = visibility;
     }
 
-    public void update(Schedule schedule) {
-        this.title = schedule.getTitle();
-        this.description = schedule.getDescription();
-        this.category = schedule.getCategory();
-        this.startDateTime = schedule.getStartDateTime();
-        this.endDateTime = schedule.getEndDateTime();
-        this.visibility = schedule.getVisibility();
+    public void update(SingleSchedule singleSchedule) {
+        this.title = singleSchedule.getTitle();
+        this.description = singleSchedule.getDescription();
+        this.category = singleSchedule.getCategory();
+        this.startDateTime = singleSchedule.getStartDateTime();
+        this.endDateTime = singleSchedule.getEndDateTime();
+        this.visibility = singleSchedule.getVisibility();
     }
 }

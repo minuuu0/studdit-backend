@@ -1,7 +1,7 @@
 package com.studdit.schedule.service;
 
-import com.studdit.schedule.Schedule;
-import com.studdit.schedule.ScheduleRepository;
+import com.studdit.schedule.SingleSchedule;
+import com.studdit.schedule.SingleScheduleRepository;
 import com.studdit.schedule.enums.Visibility;
 import com.studdit.schedule.request.ScheduleCreateServiceRequest;
 import com.studdit.schedule.request.ScheduleModifyServiceRequest;
@@ -25,10 +25,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ScheduleServiceTest {
+class SingleScheduleServiceTest {
 
     @Mock
-    private ScheduleRepository scheduleRepository;
+    private SingleScheduleRepository singleScheduleRepository;
 
     @InjectMocks
     private ScheduleService scheduleService;
@@ -49,7 +49,7 @@ class ScheduleServiceTest {
                 .visibility(Visibility.PUBLIC)
                 .build();
 
-        Schedule savedSchedule = Schedule.builder()
+        SingleSchedule savedSingleSchedule = SingleSchedule.builder()
                 .id(1L)
                 .title("알고리즘 스터디")
                 .description("그래프 탐색 알고리즘 공부")
@@ -59,7 +59,7 @@ class ScheduleServiceTest {
                 .visibility(Visibility.PUBLIC)
                 .build();
 
-        when(scheduleRepository.save(any(Schedule.class))).thenReturn(savedSchedule);
+        when(singleScheduleRepository.save(any(SingleSchedule.class))).thenReturn(savedSingleSchedule);
 
         // when
         ScheduleCreateResponse response = scheduleService.createSchedule(request);
@@ -74,7 +74,7 @@ class ScheduleServiceTest {
         assertThat(response.getEndDateTime()).isEqualTo(endTime);
         assertThat(response.getVisibility()).isEqualTo(Visibility.PUBLIC);
         
-        verify(scheduleRepository, times(1)).save(any(Schedule.class));
+        verify(singleScheduleRepository, times(1)).save(any(SingleSchedule.class));
     }
 
     @Test
@@ -87,7 +87,7 @@ class ScheduleServiceTest {
         LocalDateTime newStartTime = LocalDateTime.of(2025, 6, 4, 14, 0);
         LocalDateTime newEndTime = LocalDateTime.of(2025, 6, 4, 16, 0);
         
-        Schedule existingSchedule = Schedule.builder()
+        SingleSchedule existingSingleSchedule = SingleSchedule.builder()
                 .id(scheduleId)
                 .title("기존 제목")
                 .description("기존 내용")
@@ -107,7 +107,7 @@ class ScheduleServiceTest {
                 .visibility(Visibility.PUBLIC)
                 .build();
 
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(existingSchedule));
+        when(singleScheduleRepository.findById(scheduleId)).thenReturn(Optional.of(existingSingleSchedule));
 
         // when
         ScheduleModifyResponse response = scheduleService.modifySchedule(request);
@@ -123,14 +123,14 @@ class ScheduleServiceTest {
         assertThat(response.getVisibility()).isEqualTo(Visibility.PUBLIC);
         
         // 원본 객체가 실제로 수정되었는지 확인
-        assertThat(existingSchedule.getTitle()).isEqualTo("수정된 제목");
-        assertThat(existingSchedule.getDescription()).isEqualTo("수정된 내용");
-        assertThat(existingSchedule.getCategory()).isEqualTo("수정된 카테고리");
-        assertThat(existingSchedule.getStartDateTime()).isEqualTo(newStartTime);
-        assertThat(existingSchedule.getEndDateTime()).isEqualTo(newEndTime);
-        assertThat(existingSchedule.getVisibility()).isEqualTo(Visibility.PUBLIC);
+        assertThat(existingSingleSchedule.getTitle()).isEqualTo("수정된 제목");
+        assertThat(existingSingleSchedule.getDescription()).isEqualTo("수정된 내용");
+        assertThat(existingSingleSchedule.getCategory()).isEqualTo("수정된 카테고리");
+        assertThat(existingSingleSchedule.getStartDateTime()).isEqualTo(newStartTime);
+        assertThat(existingSingleSchedule.getEndDateTime()).isEqualTo(newEndTime);
+        assertThat(existingSingleSchedule.getVisibility()).isEqualTo(Visibility.PUBLIC);
         
-        verify(scheduleRepository, times(1)).findById(scheduleId);
+        verify(singleScheduleRepository, times(1)).findById(scheduleId);
     }
 
     @Test
@@ -144,14 +144,14 @@ class ScheduleServiceTest {
                 .title("수정된 제목")
                 .build();
 
-        when(scheduleRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+        when(singleScheduleRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> scheduleService.modifySchedule(request))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("해당 ID의 일정을 찾을 수 없습니다");
         
-        verify(scheduleRepository, times(1)).findById(nonExistentId);
+        verify(singleScheduleRepository, times(1)).findById(nonExistentId);
     }
 
     @Test
@@ -162,7 +162,7 @@ class ScheduleServiceTest {
         LocalDateTime rangeStart = LocalDateTime.of(2025, 6, 1, 0, 0);
         LocalDateTime rangeEnd = LocalDateTime.of(2025, 6, 30, 23, 59, 59);
 
-        Schedule schedule1 = Schedule.builder()
+        SingleSchedule singleSchedule1 = SingleSchedule.builder()
                 .id(1L)
                 .title("6월 초 일정")
                 .startDateTime(LocalDateTime.of(2025, 6, 5, 10, 0))
@@ -171,7 +171,7 @@ class ScheduleServiceTest {
                 .visibility(Visibility.PUBLIC)
                 .build();
 
-        Schedule schedule2 = Schedule.builder()
+        SingleSchedule singleSchedule2 = SingleSchedule.builder()
                 .id(2L)
                 .title("6월 중순 일정")
                 .startDateTime(LocalDateTime.of(2025, 6, 15, 14, 0))
@@ -180,7 +180,7 @@ class ScheduleServiceTest {
                 .visibility(Visibility.PRIVATE)
                 .build();
 
-        Schedule schedule3 = Schedule.builder()
+        SingleSchedule singleSchedule3 = SingleSchedule.builder()
                 .id(3L)
                 .title("6월 말 일정")
                 .startDateTime(LocalDateTime.of(2025, 6, 28, 9, 0))
@@ -189,10 +189,10 @@ class ScheduleServiceTest {
                 .visibility(Visibility.PUBLIC)
                 .build();
 
-        List<Schedule> schedules = List.of(schedule1, schedule2, schedule3);
+        List<SingleSchedule> singleSchedules = List.of(singleSchedule1, singleSchedule2, singleSchedule3);
 
-        when(scheduleRepository.findByDateRange(any(LocalDateTime.class), any(LocalDateTime.class)))
-                .thenReturn(schedules);
+        when(singleScheduleRepository.findByDateRange(any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(singleSchedules);
 
         // when
         List<ScheduleResponse> responses = scheduleService.findSchedules("testuser", "month", referenceDate);
@@ -215,7 +215,7 @@ class ScheduleServiceTest {
         assertThat(responses.get(2).getTitle()).isEqualTo("6월 말 일정");
         assertThat(responses.get(2).getCategory()).isEqualTo("프로젝트");
 
-        verify(scheduleRepository, times(1)).findByDateRange(any(LocalDateTime.class), any(LocalDateTime.class));
+        verify(singleScheduleRepository, times(1)).findByDateRange(any(LocalDateTime.class), any(LocalDateTime.class));
     }
 
     // to-do
@@ -230,20 +230,20 @@ class ScheduleServiceTest {
         // given
         Long scheduleId = 1L;
         
-        Schedule existingSchedule = Schedule.builder()
+        SingleSchedule existingSingleSchedule = SingleSchedule.builder()
                 .id(scheduleId)
                 .title("삭제할 일정")
                 .build();
 
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(existingSchedule));
-        doNothing().when(scheduleRepository).deleteById(scheduleId);
+        when(singleScheduleRepository.findById(scheduleId)).thenReturn(Optional.of(existingSingleSchedule));
+        doNothing().when(singleScheduleRepository).deleteById(scheduleId);
 
         // when
         scheduleService.deleteSchedule(scheduleId);
 
         // then
-        verify(scheduleRepository, times(1)).findById(scheduleId);
-        verify(scheduleRepository, times(1)).deleteById(scheduleId);
+        verify(singleScheduleRepository, times(1)).findById(scheduleId);
+        verify(singleScheduleRepository, times(1)).deleteById(scheduleId);
     }
 
     
@@ -253,15 +253,15 @@ class ScheduleServiceTest {
         // given
         Long nonExistentId = 999L;
 
-        when(scheduleRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+        when(singleScheduleRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> scheduleService.deleteSchedule(nonExistentId))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("해당 ID의 일정을 찾을 수 없습니다");
         
-        verify(scheduleRepository, times(1)).findById(nonExistentId);
-        verify(scheduleRepository, never()).deleteById(any());
+        verify(singleScheduleRepository, times(1)).findById(nonExistentId);
+        verify(singleScheduleRepository, never()).deleteById(any());
     }
     
     @Test

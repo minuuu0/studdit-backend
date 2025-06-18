@@ -5,6 +5,7 @@ import com.studdit.schedule.enums.Visibility;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,6 +30,25 @@ public class RecurringScheduleCreateRequest {
     private Visibility visibility;
 
     private RecurrenceRuleCreateRequest recurrenceRuleCreateRequest;
+
+    @Builder
+    private RecurringScheduleCreateRequest(
+            String title,
+            String description,
+            String category,
+            LocalDateTime startDateTime,
+            LocalDateTime endDateTime,
+            Visibility visibility,
+            RecurrenceRuleCreateRequest recurrenceRuleCreateRequest
+    ) {
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.visibility = visibility;
+        this.recurrenceRuleCreateRequest = recurrenceRuleCreateRequest;
+    }
 
     public RecurringSchedule toRecurringScheduleEntity() {
         return RecurringSchedule.builder()

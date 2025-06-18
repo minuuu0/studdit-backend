@@ -1,6 +1,6 @@
 package com.studdit.schedule.request;
 
-import com.studdit.schedule.Schedule;
+import com.studdit.schedule.SingleSchedule;
 import com.studdit.schedule.enums.Visibility;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,8 +38,8 @@ public class ScheduleModifyServiceRequest {
         this.endDateTime = endDateTime;
     }
 
-    public Schedule toEntity() {
-        return Schedule.builder()
+    public SingleSchedule toEntity() {
+        return SingleSchedule.builder()
                 .id(id)
                 .title(title)
                 .description(description)

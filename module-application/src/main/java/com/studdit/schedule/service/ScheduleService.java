@@ -1,8 +1,8 @@
 package com.studdit.schedule.service;
 
 
-import com.studdit.schedule.Schedule;
-import com.studdit.schedule.ScheduleRepository;
+import com.studdit.schedule.SingleSchedule;
+import com.studdit.schedule.SingleScheduleRepository;
 import com.studdit.schedule.enums.ScheduleViewType;
 import com.studdit.schedule.request.ScheduleCreateServiceRequest;
 import com.studdit.schedule.request.ScheduleModifyServiceRequest;
@@ -23,28 +23,28 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ScheduleService {
 
-    private final ScheduleRepository scheduleRepository;
+    private final SingleScheduleRepository singleScheduleRepository;
 
     // 단일 일정 생성
     @Transactional
     public ScheduleCreateResponse createSchedule(ScheduleCreateServiceRequest request) {
-        Schedule schedule = request.toEntity();
+        SingleSchedule singleSchedule = request.toEntity();
         
-        Schedule savedSchedule = scheduleRepository.save(schedule);
+        SingleSchedule savedSingleSchedule = singleScheduleRepository.save(singleSchedule);
 
-        return ScheduleCreateResponse.of(savedSchedule);
+        return ScheduleCreateResponse.of(savedSingleSchedule);
     }
 
     // 단일 일정 수정
     @Transactional
     public ScheduleModifyResponse modifySchedule(ScheduleModifyServiceRequest request) {
-        Schedule schedule = scheduleRepository.findById(request.getId())
+        SingleSchedule singleSchedule = singleScheduleRepository.findById(request.getId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 일정을 찾을 수 없습니다."));
                 
 
-        schedule.update(request.toEntity());
+        singleSchedule.update(request.toEntity());
         
-        return ScheduleModifyResponse.of(schedule);
+        return ScheduleModifyResponse.of(singleSchedule);
     }
 
     // 일정 조회 (단일 일정만 조회)
@@ -53,10 +53,10 @@ public class ScheduleService {
         DateRange dateRange = calculateDateRange(viewType, date);
 
         // 범위 조건에 맞는 단일 일정 조회
-        List<Schedule> schedules = scheduleRepository.findByDateRange(
+        List<SingleSchedule> singleSchedules = singleScheduleRepository.findByDateRange(
                 dateRange.getStart(), dateRange.getEnd());
 
-        return schedules.stream()
+        return singleSchedules.stream()
                 .map(ScheduleResponse::of)
                 .collect(Collectors.toList());
     }
@@ -64,12 +64,12 @@ public class ScheduleService {
     // 단일 일정 삭제
     @Transactional
     public ScheduleResponse deleteSchedule(Long scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
+        SingleSchedule singleSchedule = singleScheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 일정을 찾을 수 없습니다."));
 
         
         // 일정 인스턴스 삭제
-        scheduleRepository.deleteById(scheduleId);
+        singleScheduleRepository.deleteById(scheduleId);
         return null;
     }
 

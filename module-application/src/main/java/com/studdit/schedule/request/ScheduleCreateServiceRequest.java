@@ -1,7 +1,7 @@
 package com.studdit.schedule.request;
 
 import com.studdit.schedule.enums.Visibility;
-import com.studdit.schedule.Schedule;
+import com.studdit.schedule.SingleSchedule;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,8 +36,8 @@ public class ScheduleCreateServiceRequest {
         this.endDateTime = endDateTime;
     }
 
-    public Schedule toEntity() {
-        return Schedule.builder()
+    public SingleSchedule toEntity() {
+        return SingleSchedule.builder()
                 .title(title)
                 .description(description)
                 .category(category)
