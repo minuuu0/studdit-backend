@@ -4,7 +4,6 @@ import com.studdit.ApiResponse;
 import com.studdit.schedule.request.ScheduleCreateRequest;
 import com.studdit.schedule.request.ScheduleModifyRequest;
 import com.studdit.schedule.response.ScheduleCreateResponse;
-import com.studdit.schedule.response.ScheduleDeleteResponse;
 import com.studdit.schedule.response.ScheduleResponse;
 import com.studdit.schedule.response.ScheduleModifyResponse;
 import com.studdit.schedule.service.ScheduleService;
@@ -39,18 +38,15 @@ public class ScheduleController {
         return ApiResponse.ok(scheduleService.findSchedules(username, view, date));
     }
 
-    @PutMapping("/{scheduleId}/instances/{instanceId}")
+    @PutMapping("/{scheduleId}")
     private ApiResponse<ScheduleModifyResponse> modifySchedule(
-            @Valid @PathVariable Long scheduleId,
-            @PathVariable Long instanceId,
+            @PathVariable Long scheduleId,
             @RequestBody ScheduleModifyRequest request) {
-        return ApiResponse.ok(scheduleService.modifySchedule(request.toServiceRequest(scheduleId, instanceId)));
+        return ApiResponse.ok(scheduleService.modifySchedule(request.toServiceRequest(scheduleId)));
     }
 
-    // to-do
-    /*
     @DeleteMapping("/{id}")
-    private ApiResponse<ScheduleDeleteResponse> deleteSchedule(@Valid @PathVariable Long id) {
+    private ApiResponse<ScheduleResponse> deleteSchedule(@Valid @PathVariable Long id) {
         return ApiResponse.ok(scheduleService.deleteSchedule(id));
-    }*/
+    }
 }

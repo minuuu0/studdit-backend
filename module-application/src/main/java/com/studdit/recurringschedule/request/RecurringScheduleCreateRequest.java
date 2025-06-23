@@ -1,21 +1,23 @@
-package com.studdit.schedule.response;
+package com.studdit.recurringschedule.request;
 
-import com.studdit.schedule.SingleSchedule;
+import com.studdit.recurringschedule.RecurringSchedule;
 import com.studdit.schedule.enums.Visibility;
+import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class ScheduleCreateResponse {
-
-    private Long id;
+@NoArgsConstructor
+public class RecurringScheduleCreateRequest {
 
     private String title;
 
+    @Column(length = 1000)
     private String description;
 
     private String category;
@@ -27,34 +29,36 @@ public class ScheduleCreateResponse {
     @Enumerated(EnumType.STRING)
     private Visibility visibility;
 
+    private RecurrenceRuleCreateRequest recurrenceRuleCreateRequest;
+
     @Builder
-    private ScheduleCreateResponse(
-            Long id,
+    private RecurringScheduleCreateRequest(
             String title,
             String description,
             String category,
             LocalDateTime startDateTime,
             LocalDateTime endDateTime,
-            Visibility visibility
+            Visibility visibility,
+            RecurrenceRuleCreateRequest recurrenceRuleCreateRequest
     ) {
-        this.id = id;
         this.title = title;
         this.description = description;
         this.category = category;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.visibility = visibility;
+        this.recurrenceRuleCreateRequest = recurrenceRuleCreateRequest;
     }
 
-    public static ScheduleCreateResponse of(SingleSchedule singleSchedule) {
-        return ScheduleCreateResponse.builder()
-                .id(singleSchedule.getId())
-                .title(singleSchedule.getTitle())
-                .description(singleSchedule.getDescription())
-                .category(singleSchedule.getCategory())
-                .startDateTime(singleSchedule.getStartDateTime())
-                .endDateTime(singleSchedule.getEndDateTime())
-                .visibility(singleSchedule.getVisibility())
+    public RecurringSchedule toRecurringScheduleEntity() {
+        return RecurringSchedule.builder()
+                .title(title)
+                .description(description)
+                .category(category)
+                .startDateTime(startDateTime)
+                .endDateTime(endDateTime)
+                .visibility(visibility)
                 .build();
     }
+
 }

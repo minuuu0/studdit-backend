@@ -5,8 +5,8 @@ import com.studdit.review.Repository.ReviewRepository;
 import com.studdit.review.request.ReviewCreateServiceRequest;
 import com.studdit.review.request.ReviewModifyServiceRequest;
 import com.studdit.review.response.ReviewResponse;
-import com.studdit.schedule.domain.Schedule;
-import com.studdit.schedule.repository.ScheduleRepository;
+import com.studdit.schedule.SingleSchedule;
+import com.studdit.schedule.SingleScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class ReviewServiceTest {
     private ReviewRepository reviewRepository;
 
     @Mock
-    private ScheduleRepository scheduleRepository;
+    private SingleScheduleRepository singleScheduleRepository;
 
     @InjectMocks
     private ReviewService reviewService;
@@ -76,7 +76,7 @@ class ReviewServiceTest {
         Long scheduleId = 1L;
         Long reviewId = 1L;
 
-        Schedule schedule = Schedule.builder()
+        SingleSchedule singleSchedule = SingleSchedule.builder()
                 .id(scheduleId)
                 .title("일정 제목")
                 .build();
@@ -89,7 +89,7 @@ class ReviewServiceTest {
                 .tags(List.of("알고리즘", "그래프"))
                 .build();
 
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(schedule));
+        when(singleScheduleRepository.findById(scheduleId)).thenReturn(Optional.of(singleSchedule));
         when(reviewRepository.findByIdAndScheduleId(reviewId, scheduleId)).thenReturn(Optional.of(review));
 
         // when
@@ -111,7 +111,7 @@ class ReviewServiceTest {
         Long scheduleId = 999L;
         Long reviewId = 1L;
 
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.empty());
+        when(singleScheduleRepository.findById(scheduleId)).thenReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> reviewService.findReview(scheduleId, reviewId))
@@ -125,12 +125,12 @@ class ReviewServiceTest {
         Long scheduleId = 1L;
         Long reviewId = 999L;
 
-        Schedule schedule = Schedule.builder()
+        SingleSchedule singleSchedule = SingleSchedule.builder()
                 .id(scheduleId)
                 .title("일정 제목")
                 .build();
 
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(schedule));
+        when(singleScheduleRepository.findById(scheduleId)).thenReturn(Optional.of(singleSchedule));
         when(reviewRepository.findByIdAndScheduleId(reviewId, scheduleId)).thenReturn(Optional.empty());
 
         // when & then
@@ -203,7 +203,7 @@ class ReviewServiceTest {
         Long scheduleId = 1L;
         Long reviewId = 1L;
 
-        Schedule schedule = Schedule.builder()
+        SingleSchedule singleSchedule = SingleSchedule.builder()
                 .id(scheduleId)
                 .title("일정 제목")
                 .build();
@@ -216,7 +216,7 @@ class ReviewServiceTest {
                 .tags(List.of("알고리즘", "그래프"))
                 .build();
 
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(schedule));
+        when(singleScheduleRepository.findById(scheduleId)).thenReturn(Optional.of(singleSchedule));
         when(reviewRepository.findByIdAndScheduleId(reviewId, scheduleId)).thenReturn(Optional.of(review));
 
         // when
@@ -235,12 +235,12 @@ class ReviewServiceTest {
         Long scheduleId = 1L;
         Long reviewId = 999L;
 
-        Schedule schedule = Schedule.builder()
+        SingleSchedule singleSchedule = SingleSchedule.builder()
                 .id(scheduleId)
                 .title("일정 제목")
                 .build();
 
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(schedule));
+        when(singleScheduleRepository.findById(scheduleId)).thenReturn(Optional.of(singleSchedule));
         when(reviewRepository.findByIdAndScheduleId(reviewId, scheduleId)).thenReturn(Optional.empty());
 
         // when & then

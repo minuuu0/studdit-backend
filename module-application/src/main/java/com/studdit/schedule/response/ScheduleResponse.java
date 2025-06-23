@@ -1,14 +1,11 @@
 package com.studdit.schedule.response;
 
-import com.studdit.schedule.domain.Schedule;
-import com.studdit.schedule.domain.ScheduleInstance;
+import com.studdit.schedule.SingleSchedule;
+import com.studdit.schedule.enums.Visibility;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Getter
 public class ScheduleResponse {
@@ -17,8 +14,9 @@ public class ScheduleResponse {
     private String title;
     private String description;
     private String category;
-    private boolean isRecurring;
-    private List<ScheduleInstanceResponse> instances;
+    private Visibility visibility;
+    private LocalDateTime startDateTime;     // 시작 일시
+    private LocalDateTime endDateTime;       // 종료 일시
 
     @Builder
     private ScheduleResponse(
@@ -26,55 +24,28 @@ public class ScheduleResponse {
             String title,
             String description,
             String category,
-            boolean isRecurring,
-            List<ScheduleInstanceResponse> instances
+            Visibility visibility,
+            LocalDateTime startDateTime,
+            LocalDateTime endDateTime
     ) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.category = category;
-        this.isRecurring = isRecurring;
-        this.instances = instances;
+        this.visibility = visibility;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
     }
 
-    public static ScheduleResponse of(ScheduleInstance instance, Schedule schedule) {
+    public static ScheduleResponse of(SingleSchedule singleSchedule) {
         return ScheduleResponse.builder()
-                .id(schedule.getId())
-                .title(schedule.getTitle())
-                .description(schedule.getDescription())
-                .category(schedule.getCategory())
-                .isRecurring(schedule.getIsRecurring())
-                .instances(List.of(ScheduleInstanceResponse.of(instance)))
+                .id(singleSchedule.getId())
+                .title(singleSchedule.getTitle())
+                .description(singleSchedule.getDescription())
+                .category(singleSchedule.getCategory())
+                .visibility(singleSchedule.getVisibility())
+                .startDateTime(singleSchedule.getStartDateTime())
+                .endDateTime(singleSchedule.getEndDateTime())
                 .build();
-    }
-
-    public static ScheduleResponse of(Schedule schedule, List<ScheduleInstance> instances) {
-
-        return ScheduleResponse.builder()
-                .id(schedule.getId())
-                .title(schedule.getTitle())
-                .description(schedule.getDescription())
-                .category(schedule.getCategory())
-                .isRecurring(schedule.getIsRecurring())
-                .instances(instances.stream()
-                        .map(ScheduleInstanceResponse::of)
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
-
-    public static List<ScheduleResponse> fromInstances(List<ScheduleInstance> instances, Map<Long, Schedule> scheduleMap) {
-        // 1. 같은 스케줄끼리 그룹화
-        Map<Long, List<ScheduleInstance>> instancesByScheduleId = instances.stream()
-                .collect(Collectors.groupingBy(ScheduleInstance::getScheduleId));
-
-        // 2. 스케줄 변환
-        return instancesByScheduleId.keySet().stream()
-                .map(scheduleId -> {
-                    List<ScheduleInstance> scheduleInstances = instancesByScheduleId.get(scheduleId);
-                    Schedule schedule = scheduleMap.get(scheduleId);
-                    return of(schedule, scheduleInstances);
-                })
-                .collect(Collectors.toList());
     }
 }

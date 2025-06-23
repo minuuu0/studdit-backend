@@ -5,8 +5,8 @@ import com.studdit.review.Repository.ReviewRepository;
 import com.studdit.review.request.ReviewCreateServiceRequest;
 import com.studdit.review.request.ReviewModifyServiceRequest;
 import com.studdit.review.response.ReviewResponse;
-import com.studdit.schedule.domain.Schedule;
-import com.studdit.schedule.repository.ScheduleRepository;
+import com.studdit.schedule.SingleSchedule;
+import com.studdit.schedule.SingleScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final ScheduleRepository scheduleRepository;
+    private final SingleScheduleRepository singleScheduleRepository;
 
     @Transactional
     public ReviewResponse createReview(ReviewCreateServiceRequest request) {
@@ -30,7 +30,7 @@ public class ReviewService {
 
     public ReviewResponse findReview(Long scheduleId, Long reviewId) {
 
-        Schedule schedule = scheduleRepository.findById(scheduleId)
+        SingleSchedule singleSchedule = singleScheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 일정을 찾을 수 없습니다."));
 
         Review review = reviewRepository.findByIdAndScheduleId(reviewId, scheduleId)
@@ -50,7 +50,7 @@ public class ReviewService {
 
     @Transactional
     public ReviewResponse deleteReview(Long scheduleId, Long reviewId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
+        SingleSchedule singleSchedule = singleScheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 일정을 찾을 수 없습니다."));
 
         Review review = reviewRepository.findByIdAndScheduleId(reviewId, scheduleId)

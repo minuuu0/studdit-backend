@@ -1,7 +1,7 @@
 package com.studdit.schedule.request;
 
 import com.studdit.schedule.enums.Visibility;
-import com.studdit.schedule.domain.Schedule;
+import com.studdit.schedule.SingleSchedule;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,6 @@ public class ScheduleCreateServiceRequest {
     private Visibility visibility;
     private LocalDateTime startDateTime;     // 시작 일시
     private LocalDateTime endDateTime;       // 종료 일시
-    private RecurrenceRuleCreateServiceRequest recurrenceRuleCreateServiceRequest;
 
     @Builder
     private ScheduleCreateServiceRequest(
@@ -27,8 +26,7 @@ public class ScheduleCreateServiceRequest {
             String category,
             Visibility visibility,
             LocalDateTime startDateTime,
-            LocalDateTime endDateTime,
-            RecurrenceRuleCreateServiceRequest recurrenceRuleCreateServiceRequest
+            LocalDateTime endDateTime
     ) {
         this.title = title;
         this.description = description;
@@ -36,16 +34,16 @@ public class ScheduleCreateServiceRequest {
         this.visibility = visibility;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-        this.recurrenceRuleCreateServiceRequest = recurrenceRuleCreateServiceRequest;
     }
 
-    public Schedule toScheduleEntity() {
-        boolean isRecurring = this.recurrenceRuleCreateServiceRequest != null;
-        return Schedule.builder()
+    public SingleSchedule toEntity() {
+        return SingleSchedule.builder()
                 .title(title)
                 .description(description)
                 .category(category)
-                .isRecurring(isRecurring)
+                .visibility(visibility)
+                .startDateTime(startDateTime)
+                .endDateTime(endDateTime)
                 .build();
     }
 }
