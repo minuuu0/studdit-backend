@@ -34,6 +34,11 @@ public class RecurringScheduleGenerator {
         
         int maxOccurrences = rule.getMaxOccurrences() != null ? rule.getMaxOccurrences() : DEFAULT_MAX_OCCURRENCES;
         LocalDate endDate = rule.getEndDate();
+        
+        // endDate가 startDate보다 이전인 경우 예외 발생
+        if (endDate != null && endDate.isBefore(currentStart.toLocalDate())) {
+            throw new IllegalArgumentException("반복 종료일은 시작일보다 이후여야 합니다.");
+        }
 
         String title = request.getTitle();
         String description = request.getDescription();

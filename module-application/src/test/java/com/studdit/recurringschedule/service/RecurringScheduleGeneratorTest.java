@@ -147,7 +147,7 @@ class RecurringScheduleGeneratorTest {
     }
 
     @Test
-    @DisplayName("maxOccurrences가 null인 경우 기본값 1000을 사용한다")
+    @DisplayName("maxOccurrences가 null인 경우 종료 일정에 맞춰 일정이 생성된다.")
     void createScheduleWithNullMaxOccurrences() {
         // given
         LocalDateTime startDateTime = LocalDateTime.of(2024, 1, 1, 10, 0);
@@ -188,7 +188,7 @@ class RecurringScheduleGeneratorTest {
     }
 
     @Test
-    @DisplayName("endDate가 startDate 이전인 경우 스케줄이 생성되지 않는다")
+    @DisplayName("endDate가 startDate 이전인 경우 예외가 발생한다")
     void createScheduleWithEndDateBeforeStartDate() {
         // given
         LocalDateTime startDateTime = LocalDateTime.of(2024, 1, 5, 10, 0);
@@ -201,11 +201,10 @@ class RecurringScheduleGeneratorTest {
 
         RecurrenceRule rule = createRule(RecurrenceType.DAILY, 10, endDate);
 
-        // when
-        List<RecurringSchedule> schedules = generator.createRecurringSchedule(request, rule);
-
-        // then
-        assertThat(schedules).isEmpty();
+        // when & then
+        assertThatThrownBy(() -> generator.createRecurringSchedule(request, rule))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("반복 종료일은 시작일보다 이후여야 합니다");
     }
 
     @Test

@@ -58,4 +58,19 @@ public class RecurringSchedule extends BaseEntity {
     this.visibility = visibility;
   }
 
+  public void update(String title, String description, String category, 
+                    LocalDateTime startDateTime, LocalDateTime endDateTime, 
+                    Visibility visibility) {
+    this.title = title;
+    this.description = description;
+    this.category = category;
+    this.startDateTime = startDateTime;
+    this.endDateTime = endDateTime;
+    this.visibility = visibility;
+  }
+  
+  public void updateRecurrenceRuleId(Long recurrenceRuleId) {
+    this.recurrenceRuleId = recurrenceRuleId;
+  }
+
 }

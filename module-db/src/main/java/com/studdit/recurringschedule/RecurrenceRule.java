@@ -41,4 +41,10 @@ public class RecurrenceRule extends BaseEntity {
         this.maxOccurrences = maxOccurrences;
         this.endDate = endDate;
     }
+
+    public void update(RecurrenceType recurrenceType, Integer maxOccurrences, LocalDate endDate) {
+        this.recurrenceType = recurrenceType;
+        this.maxOccurrences = maxOccurrences;
+        this.endDate = endDate;
+    }
 }
