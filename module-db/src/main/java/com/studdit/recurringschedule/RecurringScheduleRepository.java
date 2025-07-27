@@ -15,4 +15,7 @@ public interface RecurringScheduleRepository extends JpaRepository<RecurringSche
     
     @Query("SELECT r FROM RecurringSchedule r WHERE r.recurrenceRuleId = :recurrenceRuleId AND r.startDateTime >= :fromDateTime")
     List<RecurringSchedule> findByRecurrenceRuleIdAndStartDateTimeAfter(@Param("recurrenceRuleId") Long recurrenceRuleId, @Param("fromDateTime") LocalDateTime fromDateTime);
+    
+    @Query("SELECT r FROM RecurringSchedule r WHERE r.startDateTime <= :end AND r.endDateTime >= :start")
+    List<RecurringSchedule> findByDateRange(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }

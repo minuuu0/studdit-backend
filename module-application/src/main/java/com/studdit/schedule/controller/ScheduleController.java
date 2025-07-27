@@ -6,7 +6,9 @@ import com.studdit.schedule.request.ScheduleModifyRequest;
 import com.studdit.schedule.response.ScheduleCreateResponse;
 import com.studdit.schedule.response.ScheduleResponse;
 import com.studdit.schedule.response.ScheduleModifyResponse;
+import com.studdit.schedule.response.UnifiedScheduleResponse;
 import com.studdit.schedule.service.ScheduleService;
+import com.studdit.schedule.service.UnifiedScheduleQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,6 +23,7 @@ import java.util.List;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
+    private final UnifiedScheduleQueryService unifiedScheduleQueryService;
 
     @PostMapping()
     private ApiResponse<ScheduleCreateResponse> createSchedule(
@@ -30,12 +33,12 @@ public class ScheduleController {
     }
 
     @GetMapping()
-    private ApiResponse<List<ScheduleResponse>> findSchedules(
+    private ApiResponse<List<UnifiedScheduleResponse>> findSchedules(
             @RequestParam String username,
             @RequestParam(required = false, defaultValue = "month") String view,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date
     ) {
-        return ApiResponse.ok(scheduleService.findSchedules(username, view, date));
+        return ApiResponse.ok(unifiedScheduleQueryService.findSchedules(username, view, date));
     }
 
     @PutMapping("/{scheduleId}")
